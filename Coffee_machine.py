@@ -60,29 +60,62 @@ from main import MENU, resources
 # b. Once all resources have been deducted, tell the user “Here is your latte. Enjoy!”. If
 # latte was their choice of drink.
 game = True
-banii_mei = 0
-rest = 0
-total_money = 0
-quarters = 0.25
-dimes = 0.10
-nickles = 0.05
-pennies = 0.01
-def espresso():
-    banii_mei = 0
-    if MENU['espresso']['ingredients']['water'] <= resources['water'] and MENU['espresso']['ingredients']['coffee'] <= resources['coffee']:
-        while banii_mei <= MENU['espresso']['cost'] or banii_mei > MENU['espresso']['cost']:
-            print("This coffee cost : 1.5$")
-            print(f"Remember:\nquarters: {quarters}$,\ndimes: {dimes}$,\nnickles: {nickles}$,\npennies: {pennies}$")
-            print(f"Trebuie sa platesti: {round((MENU['espresso']['cost'] - banii_mei), 2)}")
-            insert_coins = float(input("Insert coins: $"))
-            banii_mei = banii_mei + round(insert_coins, 2)
-            if banii_mei >= MENU['espresso']['cost']:
-                resources['water'] = resources['water'] - MENU['espresso']['ingredients']['water']
-                resources['coffee'] = resources['coffee'] - MENU['espresso']['ingredients']['coffee']
-                print("Bucura-te de cafea!")
-                return banii_mei
+money = 0
+lista = []
+monede = {
+    "quarters": 0.25,
+    "dimes": 0.10,
+    "nickles": 0.05,
+    "pennies": 0.01,
+}
+
+def alegere_cafea(intrebare):
+    """Alegere cafea din meniu"""
+    return MENU[intrebare]
+
+
+def calc_meniu(cafeaua):
+    """Calculator resurse"""
+    for i in cafeaua['ingredients']:
+        if cafeaua['ingredients'][i] > resources[i]:
+            print("Ne pare rau...nu sunt destule resurse")
+            return False
+
     else:
-        print("Ne pare rau....nu mai avem resurse!")
+        return True
+
+
+
+
+def monezi_cafea(money):
+    """Introducere monezi pana la valoarea adevarata"""
+    if meniu_calc == True:
+        while money <= cafeaua['cost']:
+            for a in monede:
+                print(f"{a}: ${monede[a]}")
+            print(f"Cafeaua ta {intrebare} costa {cafeaua['cost']}")
+            for i in monede:
+                cerere = int(input(f"How many {i}: "))
+                money = money + (cerere * monede[i])
+                if money >= cafeaua['cost']:
+                    print(f"Ai introdus {money}....Cafeaua se prepara")
+                    break
+                else:
+                    print(f"Pana acum ai introdus {money}")
+            if money >= cafeaua['cost']:
+                if money > cafeaua['cost']:
+                    restul = money - cafeaua['cost']
+                    print(f"Poftim restul: {round(restul, 2)}")
+                for i in cafeaua['ingredients']:
+                    resources[i] = resources[i] - cafeaua['ingredients'][i]
+                print(f"Enjoy the coffee {intrebare}")
+                return money
+            else:
+                print("Ne pare rau....nu ai introdus destule monezi")
+                return 0
+    else:
+        return 0
+
 
 while game:
     intrebare = input("What would you like? (espresso/latte/cappuccino):").lower()
@@ -91,18 +124,24 @@ while game:
         game = False
     elif intrebare == "report":
         for a in resources:
-            print(f"{a}: {resources[a]}")
-    elif intrebare == "espresso":
-        suma = espresso()
-        rest = round((suma - MENU['espresso']['cost']), 2)
-        banii_mei = banii_mei + rest
-        suma = suma - rest
-        total_money = total_money + suma
-        resources['money'] = total_money
-        if banii_mei > 0:
-            print(f"Pana acum banii tai sunt: {banii_mei}")
-            if rest > 0:
-                print(f"Restul tau de la cafea este: {rest}")
+            if a == 'water' or a == 'milk':
+                print(f"{a}: {resources[a]}ml")
+            elif a == 'coffee':
+                print(f"{a}: {resources[a]}g")
+            elif a == 'money':
+                print(f"{a}: ${resources[a]}")
+    elif intrebare == "espresso" or intrebare == "latte" or intrebare == "cappuccino":
+        cafeaua = alegere_cafea(intrebare)
+        meniu_calc = calc_meniu(cafeaua)
+        monezi = monezi_cafea(money)
+        lista.append(monezi)
+        if monezi > 0:
+            resources['money'] = sum(lista)
+
+
+
+
+
 
 
 
