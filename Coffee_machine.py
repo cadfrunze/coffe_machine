@@ -98,7 +98,7 @@ def monezi_cafea(money):
                 cerere = int(input(f"How many {i}: "))
                 money = money + (cerere * monede[i])
                 if money >= cafeaua['cost']:
-                    print(f"Ai introdus {money}....Cafeaua se prepara")
+                    print(f"Ai introdus {money}....Cafeaua se prepare")
                     break
                 else:
                     print(f"Pana acum ai introdus {money}")
