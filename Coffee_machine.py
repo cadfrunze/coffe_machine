@@ -105,6 +105,7 @@ def monezi_cafea(money):
             if money >= cafeaua['cost']:
                 if money > cafeaua['cost']:
                     restul = money - cafeaua['cost']
+                    money = money - restul
                     print(f"Poftim restul: {round(restul, 2)}")
                 for i in cafeaua['ingredients']:
                     resources[i] = resources[i] - cafeaua['ingredients'][i]
